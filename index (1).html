@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>50 Жас Мерейтойы — Салтанатты Шақыру</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkVelvet: '#0D0D0D',
+                        gold: {
+                            light: '#F3E5AB',
+                            DEFAULT: '#D4AF37',
+                            dark: '#AA7C11',
+                            shimmer: '#F7E7B4'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP & Lenis Smooth Scroll & Confetti -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.28/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Base styles */
+        body {
+            background-color: #0D0D0D;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Velvet Backdrop with noise */
+        .velvet-noise {
+            background-color: #0D0D0D;
+            background-image: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.9) 0%, rgba(13, 13, 13, 1) 100%);
+            position: relative;
+        }
+        
+        .velvet-noise::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.02;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Golden shimmer text and borders */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA7C11 100%);
+        }
+
+        .gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+
+        .gold-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(243,229,171,0.4) 0%, rgba(212,175,55,0.1) 50%, rgba(170,124,17,0.4) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Custom glow effects */
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Glassmorphism */
+        .luxury-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .luxury-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Ambient glowing circles */
+        .ambient-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            filter: blur(40px);
+            z-index: 1;
+        }
+
+        /* Hide scrollbars during intro */
+        .no-scroll {
+            overflow: hidden !important;
+        }
+
+        /* Shimmer Button Effect */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-btn {
+            background: linear-gradient(90deg, #AA7C11 0%, #D4AF37 25%, #F3E5AB 50%, #D4AF37 75%, #AA7C11 100%);
+            background-size: 200% auto;
+            animation: shimmer 4s infinite linear;
+            transition: all 0.3s ease;
+        }
+        .shimmer-btn:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: scale(1.02);
+        }
+
+        /* Floating dust particles */
+        #dust-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Custom curtain split styles */
+        .curtain-panel {
+            position: fixed;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-color: #0D0D0D;
+            z-index: 9999;
+            transition: transform 1.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        .curtain-left { left: 0; border-right: 1px solid rgba(212, 175, 55, 0.15); }
+        .curtain-right { right: 0; border-left: 1px solid rgba(212, 175, 55, 0.15); }
+
+        .curtain-content {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            text-align: center;
+            padding: 20px;
+            pointer-events: auto;
+            transition: opacity 1s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        /* Image Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, 0.95);
+            z-index: 100000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Subtle patterns */
+        .pattern-overlay {
+            opacity: 0.04;
+            background-image: radial-gradient(rgba(212, 175, 55, 1) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="no-scroll velvet-noise">
+
+    <!-- Ambient Dust Particles -->
+    <canvas id="dust-canvas"></canvas>
+
+    <!-- INTRO CURTAIN SCREEN -->
+    <div id="curtain-left-panel" class="curtain-panel curtain-left"></div>
+    <div id="curtain-right-panel" class="curtain-panel curtain-right"></div>
+    
+    <div id="intro-container" class="curtain-content">
+        <!-- Floating elegant patterns behind intro text -->
+        <div class="absolute inset-0 pattern-overlay pointer-events-none"></div>
+        <div class="ambient-glow" style="top: 25%; left: 35%;"></div>
+        
+        <div class="z-10 max-w-lg px-6 flex flex-col items-center">
+            <!-- Decorative Elegant Emblem -->
+            <div class="mb-8 opacity-0 intro-element" style="transform: translateY(20px);">
+                <svg class="w-16 h-16 text-gold" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
+                    <path d="M50 15 L53 35 L73 38 L56 50 L62 70 L50 58 L38 70 L44 50 L27 38 L47 35 Z" fill="url(#goldGrad)" opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#F3E5AB" />
+                            <stop offset="50%" stop-color="#D4AF37" />
+                            <stop offset="100%" stop-color="#AA7C11" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <p class="font-sans tracking-[0.3em] text-xs text-gold uppercase mb-6 opacity-0 intro-element" style="transform: translateY(20px);">
+                ҚҰРМЕТТІ ҚОНАҚ!
+            </p>
+            
+            <h1 class="font-serif italic text-4xl sm:text-5xl text-white font-light leading-relaxed mb-6 opacity-0 intro-element" style="transform: translateY(20px);">
+                Сізді
+            </h1>
+            
+            <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mb-8 opacity-0 intro-element" style="transform: translateY(20px);"></div>
+            
+            <h2 class="font-serif text-5xl sm:text-7xl font-bold tracking-[0.05em] gold-gradient-text leading-tight mb-8 opacity-0 intro-element" style="transform: translateY(20px);">
+                50 ЖАС<br>МЕРЕЙТОЙЫНА
+            </h2>
+            
+            <p class="font-sans text-sm sm:text-base text-gray-400 font-light tracking-[0.15em] uppercase mb-12 opacity-0 intro-element" style="transform: translateY(20px);">
+                зор қуанышпен шақырамыз
+            </p>
+            
+            <button onclick="openInvitation()" class="shimmer-btn text-darkVelvet font-sans font-semibold tracking-[0.2em] text-sm py-4 px-10 rounded-full gold-glow opacity-0 intro-element cursor-pointer" style="transform: translateY(20px);">
+                ШАҚЫРУДЫ АШУ
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN EXQUISITE INVITATION CONTENT -->
+    <main id="main-content" class="relative z-10 opacity-0 hidden min-h-screen">
+        
+        <!-- SECTION 1: HERO / GRAND OPENING -->
+        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+            <div class="ambient-glow" style="top: 10%; right: 10%;"></div>
+            <div class="ambient-glow" style="bottom: 10%; left: 5%;"></div>
+            
+            <div class="max-w-4xl mx-auto z-10 flex flex-col items-center">
+                <span class="text-xs uppercase tracking-[0.4em] text-gold mb-4 block animate-scroll-hint">МЕРЕЙТОЙ ИЕСІ</span>
+                
+                <h2 class="font-serif text-8xl sm:text-[13rem] font-bold leading-none gold-gradient-text tracking-tighter opacity-0 scale-95" id="hero-50">
+                    50
+                </h2>
+                <h3 class="font-serif text-3xl sm:text-6xl tracking-[0.25em] text-white font-light uppercase -mt-4 sm:-mt-8 opacity-0" id="hero-title">
+                    МЕРЕЙТОЙ
+                </h3>
+                
+                <div class="w-16 h-[1px] bg-gold my-10 opacity-0" id="hero-divider"></div>
+                
+                <p class="font-serif italic text-lg sm:text-2xl text-gray-300 max-w-2xl px-6 leading-relaxed font-light opacity-0" id="hero-quote">
+                    «Жарты ғасыр – кемелдік пен парасат белесі. Өмірдің әрбір сәтін қадірлеп, асыл жандармен бірге қуанышты бөлісу – үлкен бақыт.»
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: INVITATION TEXT WITH LUXURY GOLD FRAME -->
+        <section class="py-24 px-4 relative flex justify-center items-center">
+            <div class="absolute inset-0 pattern-overlay pointer-events-none"></div>
+            
+            <div class="max-w-2xl w-full mx-auto relative gold-border p-8 sm:p-16 rounded-2xl bg-black/40 backdrop-blur-md opacity-0 scale-95 shadow-2xl" id="invite-frame">
+                <!-- Top Decorative Ornament Corner -->
+                <div class="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-gold/40 rounded-tl-lg"></div>
+                <div class="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-gold/40 rounded-tr-lg"></div>
+                <div class="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-gold/40 rounded-bl-lg"></div>
+                <div class="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-gold/40 rounded-br-lg"></div>
+                
+                <div class="text-center">
+                    <svg class="w-12 h-12 mx-auto mb-6 text-gold opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    
+                    <h3 class="font-serif text-3xl sm:text-4xl gold-gradient-text mb-8">Қадірлі ағайын-туыс, бауырлар, дос-жарандар мен әріптестер!</h3>
+                    
+                    <p class="font-sans text-sm sm:text-base text-gray-300 leading-loose mb-8 font-light">
+                        Уақыт шіркін заулаған ағынды өзендей, білінбей өмір белестерін артқа тастап барады. Осы бес ондық белесінде жинаған тәжірибемізбен, жеткен жетістігімізбен бөлісетін, ақ дастарқан басында ақ тілектер ақтарылатын салтанатты кешіміздің қадірлі қонағы болуға шақырамыз!
+                    </p>
+                    
+                    <p class="font-serif italic text-lg text-gold font-semibold">
+                        Сіздерді ұмытылмас мерекелік кештің куәсі болуға күтеміз!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: EVENT DETAILS (LUXURY CARDS WITH GLEAR EFFECT) -->
+        <section class="py-24 px-4 relative overflow-hidden">
+            <div class="ambient-glow" style="top: 30%; left: 20%;"></div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-light tracking-wider mb-4">МЕРЕКЕ АҚПАРАТЫ</h2>
+                    <div class="w-24 h-[1px] bg-gold mx-auto"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Date Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden detail-card">
+                        <div class="p-4 bg-gold/10 rounded-full mb-6">
+                            <i data-lucide="calendar" class="w-8 h-8 text-gold"></i>
+                        </div>
+                        <h4 class="font-serif text-lg tracking-widest text-gold mb-2">КҮНІ</h4>
+                        <p class="font-sans text-2xl font-semibold text-white">15 Тамыз</p>
+                        <p class="font-sans text-sm text-gray-400 mt-1">2026 жыл</p>
+                    </div>
+
+                    <!-- Time Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden detail-card">
+                        <div class="p-4 bg-gold/10 rounded-full mb-6">
+                            <i data-lucide="clock" class="w-8 h-8 text-gold"></i>
+                        </div>
+                        <h4 class="font-serif text-lg tracking-widest text-gold mb-2">УАҚЫТЫ</h4>
+                        <p class="font-sans text-2xl font-semibold text-white">Сағат 18:00</p>
+                        <p class="font-sans text-sm text-gray-400 mt-1">Басталуы</p>
+                    </div>
+
+                    <!-- Location Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden detail-card">
+                        <div class="p-4 bg-gold/10 rounded-full mb-6">
+                            <i data-lucide="map-pin" class="w-8 h-8 text-gold"></i>
+                        </div>
+                        <h4 class="font-serif text-lg tracking-widest text-gold mb-2">МЕКЕНЖАЙЫ</h4>
+                        <p class="font-sans text-xl font-medium text-white">Әл-Фараби даңғылы, 140А</p>
+                        <p class="font-sans text-sm text-gray-400 mt-1">Алматы қаласы</p>
+                    </div>
+
+                    <!-- Restaurant Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col items-center text-center relative overflow-hidden detail-card">
+                        <div class="p-4 bg-gold/10 rounded-full mb-6">
+                            <i data-lucide="utensils" class="w-8 h-8 text-gold"></i>
+                        </div>
+                        <h4 class="font-serif text-lg tracking-widest text-gold mb-2">МЕЙРАМХАНА</h4>
+                        <p class="font-sans text-2xl font-semibold text-white">"The Ritz-Carlton"</p>
+                        <p class="font-sans text-sm text-gray-400 mt-1">Grand Ballroom</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: TIMER (COUNTDOWN) -->
+        <section class="py-24 bg-gradient-to-b from-transparent to-black/60 relative">
+            <div class="max-w-4xl mx-auto text-center px-4">
+                <h3 class="font-serif text-2xl sm:text-3xl text-gold mb-12 tracking-widest">САЛТАНАТҚА ДЕЙІН ҚАЛҒАН УАҚЫТ</h3>
+                
+                <div class="grid grid-cols-4 gap-4 sm:gap-8 max-w-2xl mx-auto" id="timer-container">
+                    <div class="bg-black/40 border border-gold/20 p-4 sm:p-6 rounded-2xl backdrop-blur-md">
+                        <span id="days" class="font-serif text-4xl sm:text-6xl font-bold gold-gradient-text block">00</span>
+                        <span class="text-xs sm:text-sm text-gray-400 tracking-wider uppercase">Күн</span>
+                    </div>
+                    <div class="bg-black/40 border border-gold/20 p-4 sm:p-6 rounded-2xl backdrop-blur-md">
+                        <span id="hours" class="font-serif text-4xl sm:text-6xl font-bold gold-gradient-text block">00</span>
+                        <span class="text-xs sm:text-sm text-gray-400 tracking-wider uppercase">Сағат</span>
+                    </div>
+                    <div class="bg-black/40 border border-gold/20 p-4 sm:p-6 rounded-2xl backdrop-blur-md">
+                        <span id="minutes" class="font-serif text-4xl sm:text-6xl font-bold gold-gradient-text block">00</span>
+                        <span class="text-xs sm:text-sm text-gray-400 tracking-wider uppercase">Минут</span>
+                    </div>
+                    <div class="bg-black/40 border border-gold/20 p-4 sm:p-6 rounded-2xl backdrop-blur-md">
+                        <span id="seconds" class="font-serif text-4xl sm:text-6xl font-bold gold-gradient-text block">00</span>
+                        <span class="text-xs sm:text-sm text-gray-400 tracking-wider uppercase">Секунд</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: GALLERY (LUXURY GRID) -->
+        <section class="py-24 px-4 relative">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-light tracking-wider mb-4">ӨМІР ДАСТАНЫ</h2>
+                    <p class="font-sans text-sm text-gray-400 tracking-widest uppercase mb-4">Жарқын сәттер мұрағаты</p>
+                    <div class="w-24 h-[1px] bg-gold mx-auto"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="gallery-grid">
+                    <!-- Photo 1 -->
+                    <div class="relative overflow-hidden group rounded-2xl border border-gold/15 cursor-pointer gallery-item aspect-[4/5]" onclick="openLightbox('https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80', 'Кемелдік шағы')">
+                        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" alt="Кемелдік" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-xs tracking-widest text-gold uppercase mb-1 block">01</span>
+                            <h4 class="font-serif text-xl text-white">Кемелдік шағы</h4>
+                        </div>
+                        <div class="absolute inset-0 border border-gold/0 group-hover:border-gold/60 rounded-2xl transition-all duration-500 pointer-events-none"></div>
+                    </div>
+                    
+                    <!-- Photo 2 -->
+                    <div class="relative overflow-hidden group rounded-2xl border border-gold/15 cursor-pointer gallery-item aspect-[4/5]" onclick="openLightbox('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1200&q=80', 'Жарқын белестер')">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" alt="Белестер" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-xs tracking-widest text-gold uppercase mb-1 block">02</span>
+                            <h4 class="font-serif text-xl text-white">Жарқын белестер</h4>
+                        </div>
+                        <div class="absolute inset-0 border border-gold/0 group-hover:border-gold/60 rounded-2xl transition-all duration-500 pointer-events-none"></div>
+                    </div>
+
+                    <!-- Photo 3 -->
+                    <div class="relative overflow-hidden group rounded-2xl border border-gold/15 cursor-pointer gallery-item aspect-[4/5]" onclick="openLightbox('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=1200&q=80', 'Мәнді өмір')">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" alt="Өмір" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <span class="text-xs tracking-widest text-gold uppercase mb-1 block">03</span>
+                            <h4 class="font-serif text-xl text-white">Мәнді өмір</h4>
+                        </div>
+                        <div class="absolute inset-0 border border-gold/0 group-hover:border-gold/60 rounded-2xl transition-all duration-500 pointer-events-none"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: FAMILY -->
+        <section class="py-24 px-4 bg-gradient-to-b from-transparent to-black/40 relative">
+            <div class="ambient-glow" style="bottom: 10%; right: 5%;"></div>
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative overflow-hidden rounded-3xl gold-border aspect-[4/5]" id="family-img-container">
+                        <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80" alt="Отбасы" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <div id="family-text">
+                        <span class="text-xs uppercase tracking-[0.3em] text-gold mb-3 block">ШАҢЫРАҚТЫҢ ЖЫЛУЫ</span>
+                        <h2 class="font-serif text-4xl sm:text-5xl text-white font-light mb-6">ОТБАСЫ — БАСТЫ БАҚЫТЫМ</h2>
+                        <p class="font-sans text-gray-300 leading-relaxed font-light mb-6">
+                            «Отбасы – адам жанының панасы, ыстық ұясы. Осы бір елу жылдық ғұмыр жолында мені әрқашан қолдап, күш-жігер берген, жанымнан табылып, қуанышымды да еселеген, әр ісімді биікке жетелеген аяулы шаңырағым мен отбасыма алғысым шексіз.»
+                        </p>
+                        <p class="font-serif italic text-lg text-gold">— Мерейтой иесінен ақ тілек</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: MAP -->
+        <section class="py-24 px-4 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-serif text-4xl sm:text-5xl text-white font-light tracking-wider mb-4">МЕКЕНЖАЙ КАРТАСЫ</h2>
+                    <div class="w-24 h-[1px] bg-gold mx-auto"></div>
+                </div>
+                
+                <div class="luxury-card p-4 rounded-3xl overflow-hidden relative" id="map-container">
+                    <div class="w-full h-96 rounded-2xl overflow-hidden relative border border-gold/10">
+                        <!-- Custom styled static premium map imagery/iframe with glass overlap -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.232386991191!2d76.92984131544498!3d43.20455897913926!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836eed99424e89%3A0xa196efbe266a2a22!2sThe%20Ritz-Carlton%2C%20Almaty!5e0!3m2!1sen!2skz!4v1628100000000!5m2!1sen!2skz" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0; filter: invert(90%) hue-rotate(180deg) grayscale(100%) contrast(110%);" 
+                            allowfullscreen="" 
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    
+                    <div class="mt-6 flex flex-col sm:flex-row justify-between items-center px-4">
+                        <div class="text-center sm:text-left mb-4 sm:mb-0">
+                            <h4 class="font-serif text-xl text-white font-medium">The Ritz-Carlton, Almaty</h4>
+                            <p class="font-sans text-sm text-gray-400">Есентай Тауэрс, Әл-Фараби даңғылы 140/7</p>
+                        </div>
+                        <a href="https://maps.app.goo.gl/9ZpL3pG6F4C2v1h57" target="_blank" class="shimmer-btn text-darkVelvet font-sans font-semibold tracking-wider text-xs py-3 px-8 rounded-full cursor-pointer flex items-center gap-2">
+                            <i data-lucide="navigation" class="w-4 h-4"></i>
+                            БАҒЫТТЫ АШУ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: RSVP FORM -->
+        <section class="py-24 px-4 relative overflow-hidden bg-gradient-to-t from-[#050505] to-transparent">
+            <div class="ambient-glow" style="top: 20%; left: 10%;"></div>
+            
+            <div class="max-w-xl mx-auto relative gold-border p-8 sm:p-12 rounded-3xl bg-black/50 backdrop-blur-lg" id="rsvp-container">
+                <div class="text-center mb-8">
+                    <h3 class="font-serif text-3xl sm:text-4xl gold-gradient-text mb-2">КЕЛУІҢІЗДІ РАСТАУ (RSVP)</h3>
+                    <p class="font-sans text-xs text-gray-400 tracking-widest uppercase">Мәртебелі қонақ, келетініңізді растауыңызды сұраймыз</p>
+                </div>
+                
+                <form id="rsvp-form" onsubmit="handleRSVPSubmit(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gold mb-2 font-medium">Аты-жөніңіз</label>
+                        <input type="text" required placeholder="Мысалы: Асқар Әлиев" class="w-full bg-black/40 border border-gold/20 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold transition-colors font-sans">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gold mb-2 font-medium">Жауабыңыз</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center justify-center border border-gold/20 rounded-xl py-4 cursor-pointer hover:bg-gold/10 transition-colors select-none">
+                                <input type="radio" name="attendance" value="yes" required class="hidden" onclick="selectAttendance(this)">
+                                <span class="font-sans text-sm text-gray-300 pointer-events-none">Келемін ✔</span>
+                            </label>
+                            <label class="flex items-center justify-center border border-gold/20 rounded-xl py-4 cursor-pointer hover:bg-gold/10 transition-colors select-none">
+                                <input type="radio" name="attendance" value="no" class="hidden" onclick="selectAttendance(this)">
+                                <span class="font-sans text-sm text-gray-300 pointer-events-none">Келе алмаймын ✖</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gold mb-2 font-medium">Қонақтар саны</label>
+                        <select class="w-full bg-black/40 border border-gold/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition-colors font-sans">
+                            <option value="1" class="bg-darkVelvet">1 адам</option>
+                            <option value="2" class="bg-darkVelvet">2 адам (жұбымен)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-gold mb-2 font-medium">Мерейтой иесіне ақ тілек</label>
+                        <textarea rows="4" placeholder="Ақ тілектеріңіз..." class="w-full bg-black/40 border border-gold/20 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold transition-colors font-sans"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full shimmer-btn text-darkVelvet font-sans font-bold tracking-widest py-4 rounded-xl cursor-pointer">
+                        ЖІБЕРУ
+                    </button>
+                </form>
+                
+                <!-- Success Message -->
+                <div id="rsvp-success" class="hidden text-center py-12">
+                    <div class="p-4 bg-gold/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="heart" class="w-8 h-8 text-gold fill-gold"></i>
+                    </div>
+                    <h4 class="font-serif text-3xl gold-gradient-text mb-4">Рақмет!</h4>
+                    <p class="font-sans text-gray-300 leading-relaxed font-light">
+                        Сіздің жауабыңыз және ыстық тілегіңіз қабылданды. <br> Мерекелік кеште кездескенше!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER WITH FINE KAZAKH PATTERNS -->
+        <footer class="py-16 border-t border-gold/10 relative overflow-hidden bg-black text-center">
+            <div class="absolute inset-0 pattern-overlay pointer-events-none"></div>
+            
+            <div class="max-w-4xl mx-auto px-4 flex flex-col items-center">
+                <!-- Golden Kazakh National Ornament SVG -->
+                <div class="mb-6 text-gold opacity-40 hover:opacity-80 transition-opacity">
+                    <svg class="w-24 h-24 mx-auto" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M60 10 C65 25, 55 35, 60 50 C65 35, 55 25, 60 10 Z"/>
+                        <path d="M60 110 C65 95, 55 85, 60 70 C65 85, 55 95, 60 110 Z"/>
+                        <path d="M10 60 C25 65, 35 55, 50 60 C35 65, 25 55, 10 60 Z"/>
+                        <path d="M110 60 C95 65, 85 55, 70 60 C85 65, 95 55, 110 60 Z"/>
+                        <!-- Inner details -->
+                        <circle cx="60" cy="60" r="10" stroke="currentColor" stroke-dasharray="2 2"/>
+                        <path d="M45 45 C50 50, 50 50, 55 45"/>
+                        <path d="M75 45 C70 50, 70 50, 65 45"/>
+                        <path d="M45 75 C50 70, 50 70, 55 75"/>
+                        <path d="M75 75 C70 70, 70 70, 65 75"/>
+                    </svg>
+                </div>
+                
+                <p class="font-serif text-xl tracking-[0.2em] text-white uppercase mb-2">Асыл жандардың бас қосар сәті</p>
+                <p class="font-sans text-xs text-gold tracking-widest uppercase mb-8">50 Жас Мерейтойы — 2026</p>
+                
+                <p class="font-sans text-[10px] text-gray-600 tracking-wider">
+                    Designed with love & premium elegance. Inspired by traditional aesthetics.
+                </p>
+            </div>
+        </footer>
+        
+    </main>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" class="lightbox justify-center items-center p-4" onclick="closeLightbox()">
+        <div class="relative max-w-4xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white hover:text-gold transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Lightbox image" class="max-h-[80vh] w-auto object-contain rounded-xl gold-border shadow-2xl">
+            <h4 id="lightbox-caption" class="font-serif text-2xl text-white mt-6 tracking-wide text-center"></h4>
+        </div>
+    </div>
+
+    <!-- Script Execution -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // 1. Particle Canvas Dust Effect
+        const canvas = document.getElementById('dust-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class DustParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.speedY = Math.random() * 0.2 + 0.1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y -= this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#D4AF37';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push(new DustParticle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        // 2. Intro Animations (GSAP timeline)
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+            tl.to('.intro-element', {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                stagger: 0.25,
+                ease: 'power4.out'
+            });
+        });
+
+        // 3. Curtain Opening Action
+        function openInvitation() {
+            // Smooth Scroll Setup with Lenis
+            const lenis = new Lenis({
+                duration: 1.8,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+                orientation: 'vertical',
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Animate curtains
+            const tlOpen = gsap.timeline({
+                onComplete: () => {
+                    document.getElementById('intro-container').style.display = 'none';
+                    document.getElementById('curtain-left-panel').style.display = 'none';
+                    document.getElementById('curtain-right-panel').style.display = 'none';
+                    document.body.classList.remove('no-scroll');
+                    
+                    // Trigger elements inside the main page
+                    triggerMainEntranceAnimations();
+                }
+            });
+
+            tlOpen.to('.intro-element', {
+                opacity: 0,
+                y: -30,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: 'power3.in'
+            });
+
+            tlOpen.to('#curtain-left-panel', {
+                xPercent: -100,
+                duration: 1.6,
+                ease: 'power4.inOut'
+            }, '-=0.4');
+
+            tlOpen.to('#curtain-right-panel', {
+                xPercent: 100,
+                duration: 1.6,
+                ease: 'power4.inOut'
+            }, '-=1.6');
+
+            // Show main content wrapper immediately before opening curtain fully
+            document.getElementById('main-content').classList.remove('hidden');
+            tlOpen.to('#main-content', {
+                opacity: 1,
+                duration: 1
+            }, '-=1.2');
+        }
+
+        // 4. Main entrance premium scrollanimations
+        function triggerMainEntranceAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero Section
+            gsap.to('#hero-50', {
+                opacity: 1,
+                scale: 1,
+                duration: 2,
+                ease: 'power3.out'
+            });
+            gsap.to('#hero-title', {
+                opacity: 1,
+                y: 0,
+                duration: 2,
+                delay: 0.4,
+                ease: 'power3.out'
+            });
+            gsap.to('#hero-divider', {
+                opacity: 1,
+                scaleX: 1,
+                duration: 1.5,
+                delay: 0.8,
+                ease: 'power2.out'
+            });
+            gsap.to('#hero-quote', {
+                opacity: 1,
+                y: 0,
+                duration: 2,
+                delay: 1.1,
+                ease: 'power3.out'
+            });
+
+            // Invitation Text Frame (Fade & Scale up on scroll)
+            gsap.to('#invite-frame', {
+                scrollTrigger: {
+                    trigger: '#invite-frame',
+                    start: 'top 85%',
+                },
+                opacity: 1,
+                scale: 1,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+
+            // Luxury Detail Cards (Slide up with stagger)
+            gsap.to('.detail-card', {
+                scrollTrigger: {
+                    trigger: '.detail-card',
+                    start: 'top 90%',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            // Gallery Grid items
+            gsap.to('.gallery-item', {
+                scrollTrigger: {
+                    trigger: '#gallery-grid',
+                    start: 'top 85%',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                stagger: 0.25,
+                ease: 'power3.out'
+            });
+
+            // Family Image & Text
+            gsap.to('#family-img-container', {
+                scrollTrigger: {
+                    trigger: '#family-img-container',
+                    start: 'top 85%',
+                },
+                opacity: 1,
+                x: 0,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+            gsap.to('#family-text', {
+                scrollTrigger: {
+                    trigger: '#family-text',
+                    start: 'top 85%',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.6,
+                ease: 'power3.out'
+            });
+
+            // Map Container
+            gsap.to('#map-container', {
+                scrollTrigger: {
+                    trigger: '#map-container',
+                    start: 'top 90%',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                ease: 'power3.out'
+            });
+
+            // RSVP Container
+            gsap.to('#rsvp-container', {
+                scrollTrigger: {
+                    trigger: '#rsvp-container',
+                    start: 'top 90%',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                ease: 'power3.out'
+            });
+        }
+
+        // 5. Countdown Timer Logic
+        const targetDate = new Date("Aug 15, 2026 18:00:00").getTime();
+        
+        function updateTimer() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days).padStart(2, '0');
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            }
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // 6. Interactive RSVP Selection Styling
+        function selectAttendance(element) {
+            const labels = element.closest('.grid').querySelectorAll('label');
+            labels.forEach(l => {
+                l.classList.remove('bg-gold/20', 'border-gold');
+                l.classList.add('border-gold/20');
+            });
+            if (element.checked) {
+                element.parentElement.classList.add('bg-gold/20', 'border-gold');
+                element.parentElement.classList.remove('border-gold/20');
+            }
+        }
+
+        // 7. RSVP Submission & Gold Confetti Spray
+        function handleRSVPSubmit(event) {
+            event.preventDefault();
+            
+            // Trigger Luxury Golden Confetti Spray
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#F3E5AB', '#D4AF37', '#AA7C11', '#FFFFFF']
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#F3E5AB', '#D4AF37', '#AA7C11', '#FFFFFF']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Toggle screens with clean transitions
+            gsap.to('#rsvp-form', {
+                opacity: 0,
+                y: -10,
+                duration: 0.6,
+                onComplete: () => {
+                    document.getElementById('rsvp-form').style.display = 'none';
+                    const successEl = document.getElementById('rsvp-success');
+                    successEl.classList.remove('hidden');
+                    gsap.fromTo(successEl, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.8});
+                }
+            });
+        }
+
+        // 8. Lightbox Logic
+        function openLightbox(imgSrc, caption) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = imgSrc;
+            document.getElementById('lightbox-caption').innerText = caption;
+            lb.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
